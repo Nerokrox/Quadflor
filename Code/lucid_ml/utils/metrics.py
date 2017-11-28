@@ -6,7 +6,7 @@ import numpy as np
 import scipy.sparse as sp
 from scipy.sparse.sputils import isdense
 from sklearn.metrics import make_scorer
-from sklearn.metrics.base import UndefinedMetricWarning
+#from sklearn.metrics.base import UndefinedMetricWarning
 from sklearn.utils.sparsefuncs import count_nonzero
 
 
@@ -49,8 +49,8 @@ def hierarchical_f_measure(tr, y_true, y_pred):
             r = intersection / len(true_ancestors)
             label_scores.append(2 * p * r / (p + r))
         except ZeroDivisionError:
-            warn('F_score is ill-defined and being set to 0.0 on samples with no predicted labels',
-                 UndefinedMetricWarning, stacklevel=2)
+            #warn('F_score is ill-defined and being set to 0.0 on samples with no predicted labels',
+            #     UndefinedMetricWarning, stacklevel=2)
             label_scores.append(0)
     return np.mean(label_scores)
 
