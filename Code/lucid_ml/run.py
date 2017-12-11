@@ -310,7 +310,9 @@ def create_classifier(options, num_concepts):
         "mlp": mlp,
         "nam": ThresholdingPredictor(MLP(verbose=options.verbose, final_activation='sigmoid'), alpha=options.alpha, stepsize=0.01, verbose=options.verbose),
         "mlpthr": LinRegStack(mlp, verbose=options.verbose),
-        "mlpdt" : ClassifierStack(base_classifier=mlp, n_jobs=options.jobs, n=options.k)
+        "mlpdt" : ClassifierStack(base_classifier=mlp, n_jobs=options.jobs, n=options.k),
+        "dmml6": BRKNeighborsClassifier(mode='b', n_neighbors=options.k, use_lsh_forest=options.lshf,
+                                         algorithm='brute', metric='cosine', auto_optimize_k=options.grid_search),
     }
     # Transformation: either bm25 or tfidf included in pipeline so that IDF of test data is not considered in training
     norm = "l2" if options.norm else None
@@ -422,7 +424,7 @@ def _generate_parsers():
     classifier_options.add_argument('-f', '--classifier', dest="clf_key", default="nn", help=
     "Specify the final classifier.", choices=["nn", "brknna", "brknnb", "bbayes", "mbayes", "lsvc",
                                               "sgd", "sgddt", "rocchio", "rocchiodt", "logregress", "logregressdt",
-                                              "mlp", "listnet", "l2rdt", 'mlpthr', 'mlpdt', 'nam'])
+                                              "mlp", "listnet", "l2rdt", 'mlpthr', 'mlpdt', 'nam', 'dmml6'])
     classifier_options.add_argument('-a', '--alpha', dest="alpha", type=float, default=1e-7, help= \
         "Specify alpha parameter for stochastic gradient descent")
     classifier_options.add_argument('-n', dest="k", type=int, default=1, help=
