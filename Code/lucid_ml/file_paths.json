@@ -1,12 +1,22 @@
 {
   "example-titles": {
-    "X": "../../Resources/example/example-titles.tsv",
-    "y": "../../Resources/example/example-goldstandard.tsv",
+    "X": "../../Resources/example/example-titles.csv",
+    "y": "../../Resources/example/example-goldstandard.csv",
     "thes": "../../Resources/example/stw.json"
   },
   "example-fulltext": {
     "X": "../../Resources/example/example-fulltext",
-    "y": "../../Resources/example/example-goldstandard.tsv",
+    "y": "../../Resources/example/example-goldstandard.csv",
     "thes": "../../Resources/example/stw.json"
+  },
+  "sample-titles": {
+    "X": "../../Resources/sample/sample-titles.csv",
+    "y": "../../Resources/sample/sample-goldstandard.csv",
+    "thes": "../../Resources/sample/stw.json"
+  },
+  "sample-fulltext": {
+    "X": "../../Resources/sample/sample-fulltext",
+    "y": "../../Resources/sample/sample-goldstandard.csv",
+    "thes": "../../Resources/sample/stw.json"
   }
 }

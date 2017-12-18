@@ -37,6 +37,7 @@ from classifying.meancut_kneighbor_classifier import MeanCutKNeighborsClassifier
 from classifying.nearest_neighbor import NearestNeighbor
 from classifying.rocchioclassifier import RocchioClassifier
 from classifying.stacked_classifier import ClassifierStack
+from classifying.dmml6 import DMML6Classifier
 from utils.Extractor import load_dataset
 from utils.metrics import hierarchical_f_measure, f1_per_sample
 from utils.nltk_normalization import NltkNormalizer, word_regexp
@@ -167,7 +168,7 @@ def run(options):
                 y = clf.predict(x)
                 desc_ids = mlb.inverse_transform(y)[0]
                 labels = [thesaurus[desc_id]['prefLabel'] for desc_id in desc_ids]
-                print(*labels)
+                print(labels)
         except KeyboardInterrupt:
             exit(1)
         exit(0)
@@ -311,8 +312,7 @@ def create_classifier(options, num_concepts):
         "nam": ThresholdingPredictor(MLP(verbose=options.verbose, final_activation='sigmoid'), alpha=options.alpha, stepsize=0.01, verbose=options.verbose),
         "mlpthr": LinRegStack(mlp, verbose=options.verbose),
         "mlpdt" : ClassifierStack(base_classifier=mlp, n_jobs=options.jobs, n=options.k),
-        "dmml6": BRKNeighborsClassifier(mode='b', n_neighbors=options.k, use_lsh_forest=options.lshf,
-                                         algorithm='brute', metric='cosine', auto_optimize_k=options.grid_search),
+        "dmml6": DMML6Classifier(n_neighbors_knn=options.k, use_lsh_forest_knn=options.lshf, auto_optimize_k_knn=options.grid_search, roccio_k=options.k, weights=[1, 1, 1]),
     }
     # Transformation: either bm25 or tfidf included in pipeline so that IDF of test data is not considered in training
     norm = "l2" if options.norm else None
