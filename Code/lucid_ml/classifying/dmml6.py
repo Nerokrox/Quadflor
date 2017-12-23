@@ -2,6 +2,7 @@ from sklearn.base import BaseEstimator
 from scipy.sparse import csr_matrix
 from classifying.br_kneighbor_classifier import BRKNeighborsClassifier
 from classifying.rocchioclassifier import RocchioClassifier
+import asyncio
 import scipy.sparse as sp
 import numpy as np
 
@@ -26,12 +27,37 @@ class DMML6Classifier(BaseEstimator):
         self.knnB.fit(X, y)
         self.roccioC.fit(X, y)
 
+    @asyncio.coroutine
+    def knnAPred(self, X):
+        self.knnAResult = self.knnA.predict(X)
+    
+    @asyncio.coroutine
+    def knnBPred(self, X):
+        self.knnBResult = self.knnB.predict(X)
+
+    @asyncio.coroutine
+    def roccioCPred(self, X):
+        self.roccioCResult = self.roccioC.predict(X)
+
+    @asyncio.coroutine
+    def concpred(self, X):
+        yield from asyncio.wait([
+            self.knnAPred(X),
+            self.knnBPred(X),
+            self.roccioCPred(X),
+        ])
+
     def predict(self, X):
-        knnapred = self.knnA.predict(X)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.concpred(X))
+        #knnapred = self.knnA.predict(X)
+        knnapred = self.knnAResult
         print(str(knnapred.shape[0]) + " " + str(knnapred.shape[1]))
-        knnbpred = self.knnB.predict(X)
+        #knnbpred = self.knnB.predict(X)
+        knnbpred = self.knnBResult
         print(str(knnbpred.shape[0]) + " " + str(knnbpred.shape[1]))
-        roccioc = self.roccioC.predict(X)
+        #roccioc = self.roccioC.predict(X)
+        roccioc = self.roccioCResult
         print(str(roccioc.shape[0]) + " " + str(roccioc.shape[1]))
 
         compred = self.knnaw * knnapred + self.knnbw * knnbpred + self.rocciow * roccioc
