@@ -23,9 +23,31 @@ class DMML6Classifier(BaseEstimator):
         self.roccioC = RocchioClassifier(metric = 'cosine', k = roccio_k)
     
     def fit(self, X, y):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.concfit(X, y))
+        #self.knnA.fit(X, y)
+        #self.knnB.fit(X, y)
+        #self.roccioC.fit(X, y)
+
+    @asyncio.coroutine
+    def fitKnnA(self, X, y):
         self.knnA.fit(X, y)
+
+    @asyncio.coroutine
+    def fitKnnB(self, X, y):
         self.knnB.fit(X, y)
+
+    @asyncio.coroutine
+    def fitRoccioC(self, X, y):
         self.roccioC.fit(X, y)
+
+    @asyncio.coroutine
+    def concfit(self, X, y):
+        yield from asyncio.wait([
+            self.fitKnnA(X, y),
+            self.fitKnnB(X, y),
+            self.fitRoccioC(X, y),
+        ])
 
     @asyncio.coroutine
     def knnAPred(self, X):
